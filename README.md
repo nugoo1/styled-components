@@ -1,68 +1,110 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Styled Components
 
-## Available Scripts
+Styled components let's you keep your CSS within scope and provides a lot of benefits like (copied from their <a href="https://www.styled-components.com/docs/basics#motivation">Styled Component Docs</a>):
 
-In the project directory, you can run:
+- Automatic critical CSS: styled-components keeps track of which components are rendered on a page and injects their styles and nothing else, fully automatically. Combined with code splitting, this means your users load the least amount of code necessary.
 
-### `npm start`
+- No class name bugs: styled-components generates unique class names for your styles. You never have to worry about duplication, overlap or misspellings.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Easier deletion of CSS: it can be hard to know whether a class name is used somewhere in your codebase. styled-components makes it obvious, as every bit of styling is tied to a specific component. If the component is unused (which tooling can detect) and gets deleted, all its styles get deleted with it.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+- Simple dynamic styling: adapting the styling of a component based on its props or a global theme is simple and intuitive without having to manually manage dozens of classes.
 
-### `npm test`
+- Painless maintenance: you never have to hunt across different files to find the styling affecting your component, so maintenance is a piece of cake no matter how big your codebase is.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Automatic vendor prefixing: write your CSS to the current standard and let styled-components handle the rest.
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+First let's install the package with yarn.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+`yarn add styled-components`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Great, now let's import it and start playing around with it. The styled default export it provides us let's us create normal html tags using tag literals.
 
-### `npm run eject`
+```
+import React from "react"
+import styled, { ThemeProvider } from "styled-components"
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+const Title = styled.h1`
+color: blue
+`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+function App() {
+  return (
+    <div className="App">
+      <Title>Hello</Title>
+    </div>
+  )
+}
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export default App
+```
 
-## Learn More
+Great, next we'll be extending one component's styles and customizing it a bit.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+import React from "react"
+import styled, { ThemeProvider } from "styled-components"
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const Title = styled.h1`
+color: blue
+`
 
-### Code Splitting
+// Extends Title
+const UnderlinedTitle = styled(Title)`
+  padding: 20px;
+  text-decoration: underline;
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+function App() {
+  return (
+    <div className="App">
+      <Title>Hello</Title>
+      <UnderlinedTitle>My UnderlinedParagraph</UnderlinedTitle>
+    </div>
+  )
+}
 
-### Analyzing the Bundle Size
+export default App
+`
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+Alright, next -> You can also pass a function for the theme prop. This function will receive the parent theme, that is from another <ThemeProvider> higher up the tree. This way themes themselves can be made contextual.
 
-### Making a Progressive Web App
+```
+import React from "react"
+import styled, { ThemeProvider } from "styled-components"
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+const Title = styled.h1`
+  color: ${props => props.theme.fg};
+  font-size: 100px;
+  margin: 0;
+  background: ${props => props.theme.bg};
+`
 
-### Advanced Configuration
+// Extends Title
+const UnderlinedTitle = styled(Title)`
+  padding: 20px;
+  text-decoration: underline;
+`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+// Define our `fg` and `bg` on the theme
+const theme = {
+  fg: "palevioletred",
+  bg: "red"
+}
 
-### Deployment
+function App() {
+  return (
+    <div className="App">
+      <Title>Hello</Title>
+      <ThemeProvider theme={theme}>
+        <UnderlinedTitle>My UnderlinedParagraph</UnderlinedTitle>
+      </ThemeProvider>
+    </div>
+  )
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+export default App
+```
